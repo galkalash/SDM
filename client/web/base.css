@@ -1,0 +1,46 @@
+.logo{
+    display: block;
+    margin: 10px auto;
+}
+
+.sub-header{
+    text-align: center;
+    font-family: cursive;
+    color: darkcyan;
+    font-weight: bold;
+}
+
+/*.header{
+    text-align: center;
+}*/
+
+.menu-buttons{
+    background: none;
+    border: none;
+    font-weight: bold;
+}
+
+.menu-labels,
+.menu-buttons{
+    color: white;
+}
+
+.header,
+html{
+    background: lightgray;
+}
+
+.row{
+    width: 95%;
+    margin-top: 30px;
+    margin-left: 60px;
+}
+
+
+.table td {
+    text-align: center;
+}
+
+thead{
+    text-align: center;
+}

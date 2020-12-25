@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDM</title>
+    <link rel="shortcut icon" href="../../Resources/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
+    <script src="../../jQuery/jquery-3.5.1.min.js"></script>
+    <script src="../../bootstrap/js/popper.min.js"></script>
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+    <script src="zone.js"></script>
+    <script src="../notifications/notifications.js"></script>
+    <script src="../../chat/chat.js"></script>
+    <script src="makeNewOrder.js"></script>
+    <script src="createNewStore.js"></script>
+    <link  rel="stylesheet" href="zone.css">
+    <link  rel="stylesheet" href="../../base.css">
+    <link  rel="stylesheet" href="../notifications/notifications.css">
+</head>
+<body>
+<div class="header">
+    <img class="logo" src="../../Resources/logo.png" alt="logo" width="25%" height="auto">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-nav mx-auto">
+
+        <button id="newOrderButton" type="button" class="menu-buttons px-3" data-toggle="modal" data-target=".newOrderModal">Make new order</button>
+        <div  id="orderModal" class="modal fade newOrderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div id="newOrderHeader" class="modal-header">
+                        <h2 id="orderHeader" class="sub-header">Make new order</h2>
+                        <button type="button" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div>
+                        <h4 id="headerMessage"></h4>
+                    </div>
+                    <div id="newOrderBody" class="modal-body">
+                        <div id="orderMainPage">
+                            <form>
+                                <div class="newOrderForm">
+                                    <input placeholder="Delivery date" class="textbox-n" type="text" onfocus="(this.type='date')" id="deliveryDate">
+                                    <br>
+                                    <br>
+                                    <input type="radio" id="staticOrder" name="orderType" value="staticOrder">
+                                    <label for="staticOrder">static order</label>
+                                    <input type="radio" id="dynamicOrder" name="orderType" value="dynamicOrder">
+                                    <label for="dynamicOrder">dynamic order</label>
+                                    <br>
+                                    <br>
+                                    <input type="text" id="xLocation" placeholder="Location X">
+                                    <br>
+                                    <br>
+                                    <input type="text" id="yLocation" placeholder="Location Y">
+                                    <br>
+                                    <br>
+                                </div>
+                            </form>
+                            <button id="newOrderMainPage" class="modalNextButton btn btn-secondary">Next</button>
+                        </div>
+                        <div id="orderDynamicFields"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="ordersHistoryButton" type="button" class="menu-buttons px-3" data-toggle="modal" data-target=".ordersHistoryModal" onclick="ajaxCustomerOrdersHistory()">View orders history</button>
+        <div  id="ordersHistoryModal" class="modal fade ordersHistoryModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="sub-header">Orders history</h2>
+                        <button type="button" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="ordersHistoryTable" class="table table-hover table-striped">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="align-middle">Serial number</th>
+                                <th class="align-middle">Date</th>
+                                <th class="align-middle">Customer location</th>
+                                <th class="align-middle">Number of stores</th>
+                                <th class="align-middle">Number of items</th>
+                                <th class="align-middle">Items cost</th>
+                                <th class="align-middle">Delivery cost</th>
+                                <th class="align-middle">Total cost</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ordersHistoryTableBody"></tbody>
+                        </table>
+                        <table id="orderItemsTable" class="table table-hover table-striped" style="display: none">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="align-middle">ID</th>
+                                <th class="align-middle">Name</th>
+                                <th class="align-middle">Purchase type</th>
+                                <th class="align-middle">Purchased from</th>
+                                <th class="align-middle">Quantity</th>
+                                <th class="align-middle">Price</th>
+                                <th class="align-middle">Total price</th>
+                                <th class="align-middle">Is purchased from discount</th>
+                            </tr>
+                            </thead>
+                            <tbody id="orderItemsTableBody"></tbody>
+                        </table>
+                        <button type="button" id="backButton" class="btn btn-secondary"  onclick="backToOrdersHistory()" style="display: none">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="showFeedbacksButton" type="button" class="menu-buttons px-3" data-toggle="modal" data-target=".feedbacksModal" onclick="showFeedbacks()" style="display: none">View feedbacks</button>
+        <div  id="feedbacksModal" class="modal fade feedbacksModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="sub-header">Feedbacks</h2>
+                        <button type="button" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="feedbacksTable" class="table table-hover table-striped">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="align-middle">Customer</th>
+                                <th class="align-middle">Order date</th>
+                                <th class="align-middle">Rating</th>
+                                <th class="align-middle">Feedback</th>
+                            </tr>
+                            </thead>
+                            <tbody id="feedbacksTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="addNewStoreButton" type="button" class="menu-buttons px-3" data-toggle="modal" data-target=".addNewStoreModal" style="display: none">Add new store</button>
+        <div  id="addNewStoreModal" class="modal fade addNewStoreModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="addNewStoreHeader" class="sub-header">Add new store</h2>
+                        <h2 id="selectItemsHeader" class="sub-header" style="display: none">Select items</h2>
+                        <button type="button" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="newStoreDetails">
+                            <div>
+                                <label for="storeId">ID: </label>
+                                <input type="text" id="storeId">
+                            </div>
+                            <div>
+                                <label for="storeName">Name: </label>
+                                <input type="text" id="storeName">
+                            </div>
+                            <div>
+                                <label for="xLocationNewStore">Location X:</label>
+                                <input type="text" id="xLocationNewStore">
+
+                            </div>
+                            <div>
+                                <label for="yLocationNewStore">Location Y:</label>
+                                <input type="text" id="yLocationNewStore">
+                            </div>
+                            <div>
+                                <label for="PPK">Delivery price per kilometer: </label>
+                                <input type="text" id="PPK">
+                            </div>
+                        </div>
+                        <table id="newStoreItemsTable" class="table table-hover table-striped" style="display: none">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Purchase type</th>
+                                <th>Price</th>
+                            </tr>
+                            </thead>
+                            <tbody id="newStoreItemsTableBody"></tbody>
+                        </table>
+                        <div id="addNewStoreButtons" class="modalButtonsDiv">
+                            <button type="button" class="btn btn-secondary" id="selectItemsButton" onclick="validateNewStoreDetails()">Next</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input id="chatButton" class="menu-buttons nav-link px-5" type="button" value="Chat" data-target="#chatModal" data-toggle="modal">
+        <div id="chatModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title sub-header">Chat</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-header">
+
+                        <div class="col-xs-4">
+                            <div class="content">
+                                <div id="chatwindow">
+                                    <div id="chatarea" class="span6"></div>
+                                    <form id="chatform" method="POST" action="sendChat">
+                                        <input type="text" id="userstring" name="userstring"/>
+                                        <input class="btn btn-secondary" type="submit" value="Send"/>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <a href="../mainPage/mainPage.html">
+            <button id="backToMainMenu" class="menu-buttons px-3">Back</button>
+        </a>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="sub-header">Stores</h2>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="align-middle">ID</th>
+                    <th class="align-middle">Name</th>
+                    <th class="align-middle">Owner</th>
+                    <th class="align-middle">Number of orders</th>
+                    <th class="align-middle">Total payment for items</th>
+                    <th class="align-middle">Delivery price per kilometer</th>
+                    <th class="align-middle">Total payment for deliveries</th>
+                </tr>
+            </thead>
+            <tbody id="storesTableRows"></tbody>
+        </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2 class="sub-header">Items in this zone</h2>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="align-middle">ID</th>
+                    <th class="align-middle">Item name</th>
+                    <th class="align-middle">Purchase types</th>
+                    <th class="align-middle">Number of stores selling this item</th>
+                    <th class="align-middle">Item average cost</th>
+                    <th class="align-middle">Number of times sold</th>
+                </tr>
+                </thead>
+                <tbody id="itemsTableRows"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="storeItemsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="itemsHeader" style="display: none;" aria-hidden="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title sub-header" id="itemsHeader"></h5>
+                <h5 class="modal-title sub-header" id="ordersHeader" style="display: none"></h5>
+                <h5 class="modal-title sub-header" id="itemsInOrderHeader" style="display: none"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="storeItemsDiv" class="container-fluid bd-example-row">
+                    <table id="storeItemsTable" class="table table-hover table-striped">
+                           <thead class="thead-dark">
+                               <tr>
+                                   <th class="align-middle">ID</th>
+                                   <th class="align-middle">Item name</th>
+                                   <th class="align-middle">Purchase types</th>
+                                   <th class="align-middle">Price</th>
+                                   <th class="align-middle">Number of times sold</th>
+                               </tr>
+                           </thead>
+                        <tbody id="storeItemsRows"></tbody>
+                    </table>
+                    <table id="storeOrdersTable" class="table table-hover table-striped" style="display: none">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th class="align-middle">Serial number</th>
+                            <th class="align-middle">Date</th>
+                            <th class="align-middle">Customer</th>
+                            <th class="align-middle">Number of items</th>
+                            <th class="align-middle">Items cost</th>
+                            <th class="align-middle">Delivery cost</th>
+                        </tr>
+                        </thead>
+                        <tbody id="storeOrdersRows"></tbody>
+                    </table>
+                    <table id="storeItemsInOrderTable" class="table table-hover table-striped" style="display: none">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th class="align-middle">ID</th>
+                            <th class="align-middle">Item name</th>
+                            <th class="align-middle">Purchase types</th>
+                            <th class="align-middle">Quantity</th>
+                            <th class="align-middle">Price</th>
+                            <th class="align-middle">Total price</th>
+                            <th class="align-middle">Is purchased from discount</th>
+                        </tr>
+                        </thead>
+                        <tbody id="storeItemsInOrderRows"></tbody>
+                    </table>
+                    <div class="modalButtonsDiv">
+                        <button type="button" class="btn btn-secondary" id="backToItemsButton" onclick="backToStoreItems()" style="display:none;">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div id="notifications"></div>
+</div>
+</body>
+</html>

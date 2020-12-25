@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>SDM</title>
+    <link rel="shortcut icon" href="../../Resources/icon.png" type="image/x-icon">
+    <script src="signUp.js"></script>
+    <link  rel="stylesheet" href="../../base.css">
+    <script src="../../jQuery/jquery-3.5.1.min.js"></script>
+    <link  rel="stylesheet" href="signUp.css">
+
+</head>
+<body>
+<div class="container">
+    <h1 class="header">Welcome to Super Duper Market</h1>
+    <h2 class="sub-header">Please enter a username:</h2>
+    <div id="signUp-form">
+       <!-- <form onsubmit="validateInput()">-->
+            <input type="text" name="username" id="username" placeholder="Username"/>
+            <div class="fields">
+                <input class="radio" type="radio" id="customer" name="userType" value="customer"/>
+                <label for="customer">Customer</label>
+            </div>
+            <div class="fields">
+                <input class="radio" type="radio" id="shopOwner" name="userType" value="shopOwner"/>
+                <label for="shopOwner">Store owner</label>
+            </div>
+            <input id="login-button" class="fields" type="button" value="Login" onclick="validateInput()"/>
+        <!--</form>-->
+    </div>
+</div>
+</body>
+</html>

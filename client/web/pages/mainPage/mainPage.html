@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDM</title>
+    <link rel="shortcut icon" href="../../Resources/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
+    <script src="../../jQuery/jquery-3.5.1.min.js"></script>
+    <script src="../../bootstrap/js/popper.min.js"></script>
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../notifications/notifications.js"></script>
+    <script src="../../chat/chat.js"></script>
+    <script src="mainPage.js"></script>
+    <link  rel="stylesheet" href="mainPage.css">
+    <link  rel="stylesheet" href="../notifications/notifications.css">
+    <link  rel="stylesheet" href="../../base.css">
+</head>
+<body>
+    <div id="header" class="header">
+        <img class="logo" src="../../Resources/logo.png" alt="logo" width="25%" height="auto">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+            <div class="px-3 menu-labels">
+                <div id="greeting"></div>
+                <div id="currentBalance"></div>
+            </div>
+
+            <div id="transactionsHistory">
+                <input class="menu-buttons nav-link px-5" type="button" value="Transactions history" data-target="#transactionsHistoryModal" data-toggle="modal" onclick="ajaxTransactionsHistory()">
+
+                <div id="transactionsHistoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title sub-header" id="transactionsHistoryModalTile">Transactions history</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-hover table-striped">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Balance before</th>
+                                        <th>Balance after</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="transactionsHistoryBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="addMoneyToAccount">
+                <input class="menu-buttons nav-link px-5" type="button" value="Add money" data-target="#addMoneyModal" data-toggle="modal">
+
+                <div id="addMoneyModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title sub-header" id="addMoneyModalTile">Add money to your account</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Please enter the amount of money that you would like to add:</p>
+                                <input id="amountOfMoney" type="text">
+                                <br>
+                                <br>
+                                <input id="transactionDate" type="date">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" id="addMoneyButton" data-dismiss="modal" onclick=ajaxAddMoneyToUser()>Add money</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input id="uploadXmlMenuButton" class="menu-buttons nav-link px-5" type="button" value="Upload XML" data-target="#uploadXmlModal" data-toggle="modal">
+            <div id="uploadXmlModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title sub-header" id="uploadXmlModalTile">Upload XML</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div id="uploadXML" class="uploadXmlModal">
+                            <form method="post" enctype="multipart/form-data" id="uploadXmlForm">
+                                <input type="file"
+                                       id="xmlFIle" name="xmlFIle"
+                                       accept="text/xml">
+                                <input type="button" id="sendXml" value="send XML" onclick="uploadXml()">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input id="chatButton" class="menu-buttons nav-link px-5" type="button" value="Chat" data-target="#chatModal" data-toggle="modal">
+            <div id="chatModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title sub-header">Chat</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-header">
+
+                            <div class="col-xs-4">
+                                <div class="content">
+                                    <div id="chatwindow">
+                                        <div id="chatarea" class="span6"></div>
+                                        <form id="chatform" method="POST" action="sendChat">
+                                            <input type="text" id="userstring" name="userstring"/>
+                                            <input class="btn btn-secondary" type="submit" value="Send"/>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </nav>
+
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <h2 class="sub-header">Users</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>User type</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableRows"></tbody>
+            </table>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <h2 class="sub-header">Zones</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Owner name</th>
+                    <th>Zone name</th>
+                    <th>Number of item types</th>
+                    <th>Number of stores</th>
+                    <th>Number of orders</th>
+                    <th>Order average cost</th>
+                </tr>
+                </thead>
+                <tbody id="zonesTableRows"></tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div id="notifications"></div>
+</body>
+</html>

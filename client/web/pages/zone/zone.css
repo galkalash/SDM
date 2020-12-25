@@ -1,0 +1,57 @@
+#deliveryCostDiv{
+    margin: 10px;
+    text-align: center;
+}
+
+#orderMainPage{
+    text-align: center;
+}
+
+/*#orderDynamicFields{
+    margin-bottom: 40px;
+}*/
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+#storesDropDown{
+    margin: 0 auto;
+    display: block;
+}
+
+.modalNextButton {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.modalCancelButton{
+    margin-left: 10px;
+}
+
+.modalButtonsDiv{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+#backToMainMenu{
+    position: absolute;
+    right: 10px;
+    bottom: 7px;
+}
+
+#newStoreDetails label{
+    display: inline-block;
+    width: 200px;
+    text-align: left;
+}
+
+/*#newStoreItemsTable{
+    margin-bottom: 40px;
+}*/
+
+.table{
+    margin-bottom: 40px;
+}

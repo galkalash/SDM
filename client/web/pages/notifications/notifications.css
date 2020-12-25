@@ -1,0 +1,16 @@
+.notification{
+    position: relative;
+    width: 20rem;
+    padding: 15px 15px 15px 50px;
+    margin: 0 0 6px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    opacity: 0.85;
+}
+
+#notifications{
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
